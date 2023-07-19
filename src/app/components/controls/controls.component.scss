@@ -1,0 +1,9 @@
+.controls {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+.control {
+  display: flex;
+  flex-direction: column;
+}

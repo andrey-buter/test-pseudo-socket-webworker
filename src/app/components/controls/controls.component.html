@@ -1,0 +1,14 @@
+<div class="controls" [formGroup]="form">
+  <mat-form-field class="control">
+    <mat-label>Timer, ms</mat-label>
+    <input matInput formControlName="timer" type="number" min="0" step="1">
+  </mat-form-field>
+  <mat-form-field class="control">
+    <mat-label>Array size</mat-label>
+    <input matInput formControlName="size" type="number" min="0" step="1">
+  </mat-form-field>
+  <mat-form-field class="control">
+    <mat-label>Additional array ids (separated by comma)</mat-label>
+    <input matInput formControlName="ids" type="text">
+  </mat-form-field>
+</div>
