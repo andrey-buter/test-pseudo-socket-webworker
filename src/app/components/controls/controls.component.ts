@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { debounceTime, Subject, takeUntil } from 'rxjs';
 import { RawAdditionalIds, SocketConfig, TransportEventName } from '../../app.models';
 import { DataMediatorService } from '../../services/data-mediator.service';
@@ -18,6 +18,8 @@ export class ControlsComponent implements OnInit, OnDestroy {
     ids: '',
   };
 
+  readonly screenUpdateFrequency60HzInMs = 50;
+
   form = new FormGroup({
     timer: new FormControl<SocketConfig['timer']>(this.defaultConfig.timer, { nonNullable: true }),
     size: new FormControl<SocketConfig['size']>(this.defaultConfig.size, { nonNullable: true }),
@@ -30,6 +32,7 @@ export class ControlsComponent implements OnInit, OnDestroy {
     private readonly dataMediatorService: DataMediatorService,
     private readonly transporterService: TransporterService,
   ) {
+    this.form.get('timer')?.addValidators(Validators.min(this.screenUpdateFrequency60HzInMs));
     this.form.valueChanges.pipe(debounceTime(300), takeUntil(this.destroy$)).subscribe(formValue => {
       this.transporterService.send({
         name: TransportEventName.AdditionalIds,

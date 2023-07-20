@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 import { TransportEventName, WebWorkerMessage, WebWorkerMessageId } from '../app.models';
 import { ArrayItem, RawArrayItem } from '../array-item.class';
-import { WebWorkerService } from '../web-worker/web-worker.service';
+import { WebWorkerFactoryService } from '../web-worker/web-worker-factory.service';
 import { TransporterService } from './transporter.service';
 
 @Injectable({
@@ -13,7 +13,10 @@ export class DataMediatorService {
   private readonly destroy$ = new Subject();
   private readonly itemsToDisplay = 10;
 
-  constructor(private transporterService: TransporterService, private webWorkerService: WebWorkerService) {}
+  constructor(
+    private transporterService: TransporterService,
+    private webWorkerService: WebWorkerFactoryService,
+  ) {}
 
   init() {
     if (typeof Worker !== 'undefined') {
@@ -41,8 +44,12 @@ export class DataMediatorService {
   private onMessage(event: MessageEvent) {
     this.transporterService.send({
       name: TransportEventName.ArrayItems,
-      value: (<RawArrayItem[]>event.data).slice(this.itemsToDisplay * -1).map(item => new ArrayItem(item)),
+      value: this.handleRawItems(<RawArrayItem[]>event.data, this.itemsToDisplay),
     });
+  }
+
+  private handleRawItems(array: RawArrayItem[], count: number) {
+    return array.slice(count * -1).map(item => new ArrayItem(item));
   }
 
   private postMessage(message: WebWorkerMessage) {

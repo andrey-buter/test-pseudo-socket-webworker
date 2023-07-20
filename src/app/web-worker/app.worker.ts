@@ -5,8 +5,8 @@ import { PseudoSocket } from '../socket/pseudo-socket';
 
 const socket = new PseudoSocket();
 socket.connect();
-socket.getData$().subscribe(data => {
-  postMessage(data);
+socket.getData$().subscribe(array => {
+  postMessage(array);
 })
 
 addEventListener('message', ({ data }) => {
