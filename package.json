@@ -1,5 +1,5 @@
 {
-  "name": "041-test--webworker",
+  "name": "test-pseudo-socket-webworker",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",

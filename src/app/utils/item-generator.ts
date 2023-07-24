@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import { ArrayItem } from '../array-item.class';
+import { ArrayItem } from './array-item.class';
 
 export class TestDataGenerator {
   static getRandomFloat(min: number, max: number, precision: number): number {

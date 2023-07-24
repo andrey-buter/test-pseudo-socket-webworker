@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 import { TransportEventName, WebWorkerMessage, WebWorkerMessageId } from '../app.models';
-import { ArrayItem, RawArrayItem } from '../array-item.class';
+import { ArrayItem, RawArrayItem } from '../utils/array-item.class';
 import { WebWorkerFactoryService } from '../web-worker/web-worker-factory.service';
 import { TransporterService } from './transporter.service';
 

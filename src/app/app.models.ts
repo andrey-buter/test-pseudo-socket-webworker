@@ -1,9 +1,8 @@
-import { ArrayItem } from './array-item.class';
+import { ArrayItem } from './utils/array-item.class';
 
 export interface SocketConfig {
   size: number;
   timer: number;
-  // ids: string;
 }
 
 export type WebWorkerMessage = WebWorkerConfigMessage | WebWorkerTerminateMessage;

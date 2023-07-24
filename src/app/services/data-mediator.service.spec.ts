@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { ArrayItemsEvent, TransportEventName, WebWorkerMessageId } from '../app.models';
-import { ArrayItem, RawArrayItem } from '../array-item.class';
+import { ArrayItem, RawArrayItem } from '../utils/array-item.class';
 import { WebWorkerFactoryService } from '../web-worker/web-worker-factory.service';
 import { DataMediatorService } from './data-mediator.service';
 import { TransporterService } from './transporter.service';

@@ -2,8 +2,6 @@ import { interval, map, ReplaySubject, Subscription, switchMap, withLatestFrom }
 import { SocketConfig } from '../app.models';
 import { TestDataGenerator } from '../utils/item-generator';
 
-
-
 export class PseudoSocket {
   private socketConfig$ = new ReplaySubject<SocketConfig>(1)
 
