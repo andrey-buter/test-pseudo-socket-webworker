@@ -11,7 +11,7 @@ import { TransporterService } from './transporter.service';
 export class DataMediatorService {
   private worker?: Worker;
   private readonly destroy$ = new Subject();
-  private readonly itemsToDisplay = 10;
+  static readonly itemsToDisplay = 10;
 
   constructor(
     private transporterService: TransporterService,
@@ -44,7 +44,7 @@ export class DataMediatorService {
   private onMessage(event: MessageEvent) {
     this.transporterService.send({
       name: TransportEventName.ArrayItems,
-      value: this.handleRawItems(<RawArrayItem[]>event.data, this.itemsToDisplay),
+      value: this.handleRawItems(<RawArrayItem[]>event.data, DataMediatorService.itemsToDisplay),
     });
   }
 

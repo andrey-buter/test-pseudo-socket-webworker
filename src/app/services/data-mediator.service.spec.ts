@@ -76,11 +76,6 @@ describe('DataMediatorService', () => {
     expect(mockWebWorkerFactoryService.getWorker).toHaveBeenCalled();
   });
 
-  it('should init worker on supported environment', () => {
-    service.init();
-    expect(mockWebWorkerFactoryService.getWorker).toHaveBeenCalled();
-  });
-
   it('should send configuration to worker when init is called', () => {
     service.init();
     expect(mockTransporterService.get$).toHaveBeenCalledWith(TransportEventName.SocketConfig);
@@ -116,31 +111,21 @@ describe('DataMediatorService', () => {
     expect(sentData.name).toEqual(TransportEventName.ArrayItems);
   });
 
-  it('should send processed event data of 10 last array items to transporterService when onMessage is called', () => {
+  it('should send processed event data of [DataMediatorService.itemsToDisplay] last array items to transporterService when onMessage is called', () => {
     service.init();
     const lastId = 'lastId';
     const clonedArrayItem = clone(testItem);
+    const testEventData = new Array(DataMediatorService.itemsToDisplay).fill({...clonedArrayItem});
+    testEventData.push({ ...clonedArrayItem, id: lastId });
     const testEvent = {
-      data: [
-        { ...clonedArrayItem, id: '1' },
-        { ...clonedArrayItem, id: '2' },
-        { ...clonedArrayItem, id: '3' },
-        { ...clonedArrayItem, id: '4' },
-        { ...clonedArrayItem, id: '5' },
-        { ...clonedArrayItem, id: '6' },
-        { ...clonedArrayItem, id: '7' },
-        { ...clonedArrayItem, id: '8' },
-        { ...clonedArrayItem, id: '9' },
-        { ...clonedArrayItem, id: '10' },
-        { ...clonedArrayItem, id: lastId },
-      ],
+      data: testEventData,
     } as unknown as MessageEvent;
 
     mockWorker.onmessage?.(testEvent);
 
     const sentData = mockTransporterService.send.mock.calls[0][0] as ArrayItemsEvent;
     expect(sentData.name).toEqual(TransportEventName.ArrayItems);
-    expect(sentData.value.length).toEqual(10);
+    expect(sentData.value.length).toEqual(DataMediatorService.itemsToDisplay);
     expect(sentData.value[sentData.value.length - 1].id).toEqual(lastId);
   });
 
