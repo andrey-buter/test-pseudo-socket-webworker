@@ -8,10 +8,7 @@ import { DataMediatorService } from './services/data-mediator.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent implements OnInit, OnDestroy {
-  title = '041_TEST__webworker';
-
-  constructor(private dataMediatorService: DataMediatorService) {
-  }
+  constructor(private dataMediatorService: DataMediatorService) {}
 
   ngOnInit() {
     this.dataMediatorService.init();

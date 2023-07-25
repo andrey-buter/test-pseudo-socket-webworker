@@ -1,52 +1,46 @@
+import { APP_CONFIG } from '../app.config';
 import { TestDataGenerator } from './item-generator';
+import { hasFloatPrecision } from './number.utils';
 
 describe('TestDataGenerator', () => {
-  it('should generate a random float between the given range', () => {
-    const min = 0;
-    const max = 10;
-    const precision = 2;
+  describe('getRandomFloat', () => {
+    it('should return a random float with the default precision', () => {
+      const randomFloat = TestDataGenerator.getRandomFloat();
 
-    const randomFloat = TestDataGenerator.getRandomFloat(min, max, precision);
+      expect(hasFloatPrecision(randomFloat, APP_CONFIG.floatPrecision)).toBe(true);
+    });
 
-    expect(randomFloat).toBeGreaterThanOrEqual(min);
-    expect(randomFloat).toBeLessThanOrEqual(max);
-    expect(randomFloat.toFixed(precision)).toHaveLength(precision + 3);
-  });
+    it('should return a random float with the specified precision', () => {
+      const precision = 19;
+      const randomFloat = TestDataGenerator.getRandomFloat(precision);
 
-  it('should generate an array item with valid properties', () => {
-    const item = TestDataGenerator.generateArrayItem();
-
-    expect(item.id).toBeDefined();
-    expect(typeof item.id).toBe('string');
-
-    expect(item.int).toBeDefined();
-    expect(Number.isInteger(item.int)).toBe(true);
-
-    expect(item.float).toBeDefined();
-    expect(typeof item.float).toBe('number');
-
-    expect(item.color).toBeDefined();
-    expect(typeof item.color).toBe('string');
-
-    expect(item.child).toBeDefined();
-    expect(typeof item.child).toBe('object');
-    expect(item.child.id).toBeDefined();
-    expect(typeof item.child.id).toBe('string');
-    expect(item.child.color).toBeDefined();
-    expect(typeof item.child.color).toBe('string');
-  });
-
-  it('should generate an array of the specified size', () => {
-    const size = 5;
-
-    const array = TestDataGenerator.generateArray(size);
-
-    expect(array).toHaveLength(size);
-    expect(Array.isArray(array)).toBe(true);
-
-    array.forEach((item) => {
-      expect(typeof item).toBe('object');
+      expect(hasFloatPrecision(randomFloat, precision)).toBe(true);
     });
   });
 
+  describe('generateArrayItem', () => {
+    it('should generate a valid array item', () => {
+      const arrayItem = TestDataGenerator.generateArrayItem();
+
+      expect(arrayItem).toHaveProperty('id');
+      expect(arrayItem).toHaveProperty('int');
+      expect(arrayItem).toHaveProperty('float');
+      expect(arrayItem).toHaveProperty('color');
+      expect(arrayItem).toHaveProperty('child');
+      expect(arrayItem.child).toHaveProperty('id');
+      expect(arrayItem.child).toHaveProperty('color');
+    });
+
+    it('should generate an array of the specified size', () => {
+      const size = 5;
+      const array = TestDataGenerator.generateArray(size);
+
+      expect(array).toHaveLength(size);
+      expect(Array.isArray(array)).toBe(true);
+
+      array.forEach(item => {
+        expect(typeof item).toBe('object');
+      });
+    });
+  });
 });

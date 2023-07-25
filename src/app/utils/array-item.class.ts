@@ -1,11 +1,17 @@
+import Big from 'big.js';
 import * as Joi from 'joi';
+import { APP_CONFIG } from '../app.config';
+import { hasFloatPrecision } from './number.utils';
 
 export interface RawArrayItem {
-  id: unknown;
-  int: unknown;
-  float: unknown;
-  color: unknown;
-  child: unknown;
+  id: string;
+  int: number;
+  float: string;
+  color: string;
+  child: {
+    id: string;
+    color: string;
+  };
 }
 
 const childSchema = Joi.object({
@@ -16,7 +22,7 @@ const childSchema = Joi.object({
 const arrayItemSchema = Joi.object({
   id: Joi.string().required(),
   int: Joi.number().integer().required(),
-  float: Joi.number().precision(2).required(),
+  float: Joi.string().required(),
   color: Joi.string().required(),
   child: childSchema.required(),
 });
@@ -24,7 +30,7 @@ const arrayItemSchema = Joi.object({
 export class ArrayItem {
   id: string;
   int: number;
-  float: number;
+  float: Big;
   color: string;
   child: {
     id: string;
@@ -38,9 +44,13 @@ export class ArrayItem {
       throw new Error(`Invalid input: ${error.message}`);
     }
 
+    if (!hasFloatPrecision(value.float, APP_CONFIG.floatPrecision)) {
+      throw new Error(`Invalid input: float precision is invalid`);
+    }
+
     this.id = value.id;
     this.int = value.int;
-    this.float = value.float;
+    this.float = new Big(value.float);
     this.color = value.color;
     this.child = value.child;
   }

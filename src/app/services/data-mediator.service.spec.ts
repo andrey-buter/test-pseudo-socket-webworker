@@ -2,13 +2,10 @@ import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { ArrayItemsEvent, TransportEventName, WebWorkerMessageId } from '../app.models';
 import { ArrayItem, RawArrayItem } from '../utils/array-item.class';
+import { TestDataGenerator } from '../utils/item-generator';
 import { WebWorkerFactoryService } from '../web-worker/web-worker-factory.service';
 import { DataMediatorService } from './data-mediator.service';
 import { TransporterService } from './transporter.service';
-
-function clone<T extends Object>(obj: T): T {
-  return JSON.parse(JSON.stringify(obj));
-}
 
 describe('DataMediatorService', () => {
   let service: DataMediatorService;
@@ -16,16 +13,16 @@ describe('DataMediatorService', () => {
   let mockWebWorkerFactoryService: jest.Mocked<WebWorkerFactoryService>;
   let mockWorker: Worker;
 
-  const testItem: RawArrayItem = {
+  const testItem: RawArrayItem = Object.freeze({
     id: 'testId',
     int: 10,
-    float: 0.5,
+    float: TestDataGenerator.getRandomFloat(),
     color: 'red',
-    child: {
+    child: Object.freeze({
       id: 'childId',
       color: 'blue',
-    },
-  };
+    }),
+  });
 
   beforeEach(() => {
     global.Worker = jest.fn().mockImplementation(() => {
@@ -114,9 +111,8 @@ describe('DataMediatorService', () => {
   it('should send processed event data of [DataMediatorService.itemsToDisplay] last array items to transporterService when onMessage is called', () => {
     service.init();
     const lastId = 'lastId';
-    const clonedArrayItem = clone(testItem);
-    const testEventData = new Array(DataMediatorService.itemsToDisplay).fill({...clonedArrayItem});
-    testEventData.push({ ...clonedArrayItem, id: lastId });
+    const testEventData = new Array(DataMediatorService.itemsToDisplay).fill({...testItem});
+    testEventData.push({ ...testItem, id: lastId });
     const testEvent = {
       data: testEventData,
     } as unknown as MessageEvent;
@@ -132,7 +128,7 @@ describe('DataMediatorService', () => {
   it('should send processed event data of ArrayItem[] to transporterService when onMessage is called', () => {
     service.init();
     const testEvent = {
-      data: [{ ...clone(testItem) }],
+      data: [{ ...testItem }],
     } as unknown as MessageEvent;
 
     mockWorker.onmessage?.(testEvent);

@@ -5,7 +5,6 @@ import { TestDataGenerator } from '../utils/item-generator';
 import { PseudoSocket } from './pseudo-socket';
 
 describe('PseudoSocket', () => {
-  // Declare variables for the test
   let pseudoSocket: PseudoSocket;
   let testScheduler: TestScheduler;
 
@@ -58,22 +57,24 @@ describe('PseudoSocket', () => {
     pseudoSocket.connect();
     pseudoSocket.disconnect();
 
-    expect((pseudoSocket as any).subscription).toBeUndefined();
+    expect((pseudoSocket as any).subscription.closed).toBe(true);
   });
 
-  it('should return the data stream', () => {
-    const config = { timer: 1000, size: 10 };
+  it('should return the data stream', (done) => {
+    const config: SocketConfig = { timer: 1000, size: 10 };
     const testData = TestDataGenerator.generateArray(10);
 
-    pseudoSocket.setConfig(config);
-    (pseudoSocket as any).generateData = jest.fn(() => testData);
+    jest
+      .spyOn(TestDataGenerator, 'generateArray')
+      .mockReturnValue(testData);
 
+    pseudoSocket.setConfig(config);
     const data$ = pseudoSocket.getData$();
 
     expect(data$).toBeDefined();
-
-    testScheduler.run(({ expectObservable }) => {
-      expectObservable(data$).toBe('x', { x: testData });
+    data$.subscribe(val => {
+      expect(val).toEqual(testData);
+      done();
     });
   });
 });

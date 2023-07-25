@@ -1,16 +1,19 @@
 import { faker } from '@faker-js/faker';
-import { ArrayItem } from './array-item.class';
+import Big from 'big.js';
+import { APP_CONFIG } from '../app.config';
+import { RawArrayItem } from './array-item.class';
 
 export class TestDataGenerator {
-  static getRandomFloat(min: number, max: number, precision: number): number {
-    return parseFloat((Math.random() * (max - min) + min).toFixed(precision));
+  static getRandomFloat(precision = APP_CONFIG.floatPrecision): string {
+    const randomNumber = new Big(Math.random());
+    return randomNumber.toFixed(precision);
   }
 
   static generateArrayItem() {
-    let testData: ArrayItem = {
+    let testData: RawArrayItem = {
       id: faker.string.uuid(),
       int: faker.number.int(),
-      float: TestDataGenerator.getRandomFloat(0, 10000, 18),
+      float: TestDataGenerator.getRandomFloat(),
       color: faker.internet.color(),
       child: {
         id: faker.string.uuid(),
