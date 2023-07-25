@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { map, startWith } from 'rxjs';
+import { APP_CONFIG } from '../../app.config';
 import { TransportEventName } from '../../app.models';
 import { DataMediatorService } from '../../services/data-mediator.service';
 import { TransporterService } from '../../services/transporter.service';
@@ -11,8 +12,9 @@ import { TransporterService } from '../../services/transporter.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TableComponent {
-  items$ = this.getItems$();
-  additionalIds$ = this.getAdditionalIds$();
+  readonly items$ = this.getItems$();
+  readonly additionalIds$ = this.getAdditionalIds$();
+  readonly precision = APP_CONFIG.floatPrecision;
 
   constructor(
     private readonly dataMediatorService: DataMediatorService,

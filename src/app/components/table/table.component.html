@@ -12,7 +12,7 @@
 
     <ng-container matColumnDef="float">
       <th mat-header-cell *matHeaderCellDef>float</th>
-      <td mat-cell *matCellDef="let item">{{ item.float }}</td>
+      <td mat-cell *matCellDef="let item">{{ item.float.toFixed(precision) }}</td>
     </ng-container>
 
     <ng-container matColumnDef="color">
